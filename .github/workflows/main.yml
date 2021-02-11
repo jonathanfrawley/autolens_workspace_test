@@ -14,22 +14,30 @@ jobs:
     - name: Checkout PyAutoFit
       uses: actions/checkout@v2
       with:
-        repository: rhayes777/PyAutoFit
+        #repository: rhayes777/PyAutoFit
+        repository: jonathanfrawley/PyAutoFit
+        ref: feature/release-process
         path: PyAutoFit
     - name: Checkout PyAutoArray
       uses: actions/checkout@v2
       with:
-        repository: Jammy2211/PyAutoArray
+        #repository: Jammy2211/PyAutoArray
+        repository: jonathanfrawley/PyAutoArray
+        ref: feature/release-process
         path: PyAutoArray
     - name: Checkout PyAutoGalaxy
       uses: actions/checkout@v2
       with:
-        repository: Jammy2211/PyAutoGalaxy
+        #repository: Jammy2211/PyAutoGalaxy
+        repository: jonathanfrawley/PyAutoGalaxy
+        ref: feature/release-process
         path: PyAutoGalaxy
     - name: Checkout PyAutoLens
       uses: actions/checkout@v2
       with:
-        repository: Jammy2211/PyAutoLens
+        #repository: Jammy2211/PyAutoLens
+        repository: jonathanfrawley/PyAutoLens
+        ref: feature/release-process
         path: PyAutoLens
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -45,10 +53,10 @@ jobs:
     - name: Install dependencies
       if: steps.cache-pip.outputs.cache-hit != 'true'
       run: |
-        pip install -r PyAutoFit/requirements_build.txt
-        pip install -r PyAutoArray/requirements_build.txt
-        pip install -r PyAutoGalaxy/requirements_build.txt
-        pip install -r PyAutoLens/requirements_build.txt
+        pip install -r PyAutoFit/requirements.txt
+        pip install -r PyAutoArray/requirements.txt
+        pip install -r PyAutoGalaxy/requirements.txt
+        pip install -r PyAutoLens/requirements.txt
     - name: Integration test
       run: |
         export ROOT_DIR=`pwd`
