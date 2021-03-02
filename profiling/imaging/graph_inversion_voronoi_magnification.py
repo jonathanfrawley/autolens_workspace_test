@@ -32,7 +32,7 @@ Plots a bar chart of the deflection angle run-times from a deflections profiling
 
 
 def bar_deflection_profiles(
-    profiling_dict, fit_time, info_dict, file_path, filename, color="b"
+    profiling_dict, fit_time, info_dict, file_path, filename, color="b", norm=False
 ):
 
     plt.figure(figsize=(18, 14))
@@ -60,17 +60,22 @@ def bar_deflection_profiles(
         title = f"Voronoi Magnification Inversion HST (total time = {np.round(fit_time, 2)})"
 
     plt.yticks(fontsize=16)
-    plt.xticks([0.0, 1.0, 2.0, 3.0, 4.0, 5.0], fontsize=20)
-    plt.xlabel("Run Time (seconds)", fontsize=30)
+    if norm:
+        plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], fontsize=20)
+        plt.xlabel("% of Run Time", fontsize=30)
+    else:
+        plt.xticks([0.0, 1.0, 2.0, 3.0, 4.0, 5.0], fontsize=20)
+        plt.xlabel("Run Time (seconds)", fontsize=30)
+        plt.text(1, 20.5, f'Image Sub-Pixels = {info_dict["image_pixels"]}', fontsize=20)
+        plt.text(1, 19.5, f'Source Pixels = {info_dict["source_pixels"]}', fontsize=20)
+        plt.text(1, 18.5, f'Sub Size = {info_dict["sub_size"]}', fontsize=20)
+        plt.text(1, 17.5, f'Mask Radius = {info_dict["mask_radius"]}"', fontsize=20)
+        plt.text(1, 16.5, f'PSF 2D Shape = {info_dict["psf_shape_2d"]}', fontsize=20)
+
     plt.title(title, fontsize=26)
 
-    plt.text(1, 20.5, f'Image Sub-Pixels = {info_dict["image_pixels"]}', fontsize=20)
-    plt.text(1, 19.5, f'Source Pixels = {info_dict["source_pixels"]}', fontsize=20)
-    plt.text(1, 18.5, f'Sub Size = {info_dict["sub_size"]}', fontsize=20)
-    plt.text(1, 17.5, f'Mask Radius = {info_dict["mask_radius"]}"', fontsize=20)
-    plt.text(1, 16.5, f'PSF 2D Shape = {info_dict["psf_shape_2d"]}', fontsize=20)
-
     plt.savefig(path.join(file_path, f"{filename}.png"), bbox_inches="tight")
+
     plt.close()
 
 
@@ -102,4 +107,18 @@ bar_deflection_profiles(
     info_dict=info_dict,
     file_path=graph_path,
     filename="hst_profiling",
+)
+
+total_sum = sum(profiles_dict.values())
+profiles_dict_norm = {}
+for k in profiles_dict.keys():
+    profiles_dict_norm[k] = profiles_dict[k] / total_sum
+
+bar_deflection_profiles(
+    profiling_dict=profiles_dict_norm,
+    fit_time=fit_time,
+    info_dict=info_dict,
+    file_path=graph_path,
+    filename="hst_profiling_norm",
+    norm=True
 )
